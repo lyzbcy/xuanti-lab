@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>毕设选题发散器 ✨🍮</title>
+<style>
+:root{
+  --bg:#FAF5EC; --ink:#2B2620; --sub:#8B7F70; --card:#FFFFFF; --line:#EEE4D4;
+  --accent:#7C6CF0; --accent-soft:#EFECFE; --pink:#F0A8C0; --pink-soft:#FDEFF4;
+  --amber:#E2A23B; --amber-soft:#FBF1DE; --green:#5FA87A; --green-soft:#EAF5EE;
+  --shadow:0 10px 30px -12px rgba(80,60,30,.18);
+  --radius:18px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+  background:
+    radial-gradient(1200px 500px at 85% -10%, #F3EBFF 0%, transparent 60%),
+    radial-gradient(900px 420px at -10% 20%, #FDEFF4 0%, transparent 55%),
+    var(--bg);
+  color:var(--ink); min-height:100vh;
+}
+.serif{font-family:"Noto Serif SC","Songti SC","STSong","SimSun",serif}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+/* ---------- header ---------- */
+header{padding:52px 0 8px;text-align:center}
+.badge{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);
+  border-radius:999px;padding:7px 16px;font-size:13px;color:var(--sub);box-shadow:var(--shadow)}
+.badge b{color:var(--accent)}
+h1{font-size:clamp(30px,5vw,46px);margin:18px 0 10px;letter-spacing:2px}
+h1 .star{display:inline-block;animation:twinkle 2.6s ease-in-out infinite}
+@keyframes twinkle{0%,100%{transform:scale(1) rotate(0deg);opacity:1}50%{transform:scale(1.25) rotate(12deg);opacity:.75}}
+.tagline{color:var(--sub);font-size:15px;margin:0 auto;max-width:620px;line-height:1.9}
+.formula-ribbon{margin:26px auto 0;max-width:720px;background:linear-gradient(135deg,var(--accent-soft),var(--pink-soft));
+  border:1px dashed #D8C9F5;border-radius:14px;padding:14px 18px;font-size:15px;line-height:1.9}
+.formula-ribbon code{background:#fff;border-radius:8px;padding:2px 10px;font-size:14px;margin:0 2px;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+
+/* ---------- sections ---------- */
+section{margin:56px 0}
+.sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
+.sec-head .no{font-size:13px;color:var(--accent);letter-spacing:2px;font-weight:700}
+h2{font-size:24px;margin:0;letter-spacing:1px}
+.sec-sub{color:var(--sub);font-size:14px;margin:6px 0 20px;line-height:1.8}
+
+/* ---------- machine ---------- */
+.machine-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media (max-width:860px){.machine-grid{grid-template-columns:repeat(2,1fr)}}
+.wheel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;
+  box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;transition:.25s;position:relative;overflow:hidden}
+.wheel.locked{border-color:var(--amber);background:var(--amber-soft)}
+.wheel.settling{border-color:var(--accent)}
+.wheel-head{display:flex;align-items:center;justify-content:space-between}
+.wheel-head .k{font-size:13px;color:var(--sub);letter-spacing:2px}
+.wheel-head button{border:none;background:none;cursor:pointer;font-size:16px;padding:2px 6px;border-radius:8px;transition:.15s}
+.wheel-head button:hover{background:rgba(0,0,0,.06);transform:scale(1.15)}
+.wheel-word{min-height:96px;display:flex;align-items:center;justify-content:center;text-align:center;
+  font-size:22px;line-height:1.45;padding:6px 2px;border-radius:12px;background:var(--bg)}
+.wheel.locked .wheel-word{background:#fff}
+.wheel-word.pop{animation:pop .35s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{0%{transform:scale(.7);opacity:.2}100%{transform:scale(1);opacity:1}}
+.wheel-tags{display:flex;flex-wrap:wrap;gap:5px;min-height:24px}
+.wheel-tags span{font-size:11px;color:var(--sub);background:var(--bg);border-radius:999px;padding:2px 9px}
+.machine-bar{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap;align-items:center}
+.btn{border:none;cursor:pointer;border-radius:14px;font-size:16px;letter-spacing:2px;padding:14px 30px;
+  background:linear-gradient(135deg,var(--accent),#9B6CF0);color:#fff;box-shadow:0 10px 24px -8px rgba(124,108,240,.55);transition:.2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 14px 28px -8px rgba(124,108,240,.65)}
+.btn:active{transform:translateY(0)}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:var(--shadow);letter-spacing:0;font-size:14px;padding:12px 20px}
+.btn.small{font-size:13px;padding:8px 14px;letter-spacing:0;border-radius:10px}
+.hint{font-size:13px;color:var(--sub)}
+details.bank{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 18px;box-shadow:var(--shadow)}
+details.bank summary{cursor:pointer;font-size:14px;color:var(--sub);user-select:none}
+.bank-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:14px}
+@media (max-width:860px){.bank-grid{grid-template-columns:1fr}}
+.bank-col h4{margin:0 0 8px;font-size:14px;color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:5px;background:var(--bg);border:1px solid var(--line);
+  border-radius:999px;padding:4px 6px 4px 12px;font-size:13px}
+.chip i{font-style:normal;cursor:pointer;color:#C9BBA6;font-size:12px;padding:0 4px;border-radius:50%}
+.chip i:hover{color:#E06C5A;background:#fff}
+.bank-add{display:flex;gap:6px;margin-top:10px}
+.bank-add input{flex:1;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13px;background:#fff;color:var(--ink)}
+.bank-add input:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.bank-add button{border:none;background:var(--accent-soft);color:var(--accent);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:13px}
+.bank-add button:hover{background:#DFD8FB}
+
+/* ---------- result ---------- */
+.result{margin-top:22px;background:linear-gradient(135deg,#FFFDF8,#FDF6FF);border:1px solid #E7DCF9;
+  border-radius:var(--radius);padding:26px 28px;box-shadow:var(--shadow);display:none}
+.result.show{display:block;animation:rise .45s ease}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.result .cap{font-size:13px;color:var(--accent);letter-spacing:3px;margin-bottom:10px}
+.result .title{font-size:clamp(20px,3vw,27px);line-height:1.6}
+.result .parts{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.result .parts span{font-size:12px;border-radius:999px;padding:4px 12px;background:#fff;border:1px solid var(--line);color:var(--sub)}
+.result .parts b{color:var(--ink)}
+.result .ops{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+
+/* ---------- catalyst ---------- */
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:860px){.cat-grid{grid-template-columns:1fr}}
+.cat-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;
+  box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px;min-height:150px;position:relative}
+.cat-card .emo{font-size:26px}
+.cat-card p{margin:0;font-size:15px;line-height:1.85;flex:1}
+.cat-card .idx{font-size:11px;color:var(--sub)}
+
+/* ---------- saved ---------- */
+.saved-empty{background:var(--card);border:1px dashed var(--line);border-radius:var(--radius);
+  padding:34px;text-align:center;color:var(--sub);font-size:14px}
+.idea{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;
+  box-shadow:var(--shadow);margin-bottom:14px;animation:rise .4s ease}
+.idea-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+.idea .t{font-size:18px;line-height:1.6;flex:1}
+.idea .ops{display:flex;gap:6px;flex-shrink:0}
+.idea .ops button{border:none;background:var(--bg);border-radius:9px;cursor:pointer;font-size:13px;padding:6px 10px;color:var(--sub)}
+.idea .ops button:hover{background:var(--pink-soft);color:#D06A92}
+.idea .meta{font-size:12px;color:var(--sub);margin-top:6px}
+.score-rows{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}
+@media (max-width:860px){.score-rows{grid-template-columns:repeat(2,1fr)}}
+.score-cell{background:var(--bg);border-radius:12px;padding:10px;text-align:center}
+.score-cell .lab{font-size:12px;color:var(--sub);margin-bottom:6px}
+.stars{font-size:17px;letter-spacing:2px;cursor:pointer;user-select:none;color:#D9CDB8}
+.stars span{transition:.12s}
+.stars span.on{color:var(--amber);text-shadow:0 0 8px rgba(226,162,59,.45)}
+.stars span:hover{transform:scale(1.25)}
+.verdict{margin-top:12px;font-size:13px;display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:5px 14px}
+.verdict.go{background:var(--green-soft);color:var(--green)}
+.verdict.mid{background:var(--amber-soft);color:var(--amber)}
+.verdict.re{background:var(--pink-soft);color:#D06A92}
+.saved-bar{display:flex;justify-content:flex-end;gap:10px;margin-bottom:14px}
+
+/* ---------- table ---------- */
+.table-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:640px}
+th{text-align:left;padding:14px 16px;background:var(--bg);color:var(--sub);font-weight:600;font-size:13px;letter-spacing:1px}
+td{padding:14px 16px;border-top:1px solid var(--line);vertical-align:top;line-height:1.7}
+td .who{font-weight:700}
+td .decomp{color:var(--sub);font-size:13px}
+td .decomp b{color:var(--accent);font-weight:600}
+
+/* ---------- check ---------- */
+.check-list{display:flex;flex-direction:column;gap:12px}
+details.check{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 20px;box-shadow:var(--shadow)}
+details.check summary{cursor:pointer;font-size:16px;font-weight:600;list-style:none;display:flex;align-items:center;gap:10px;user-select:none}
+details.check summary::-webkit-details-marker{display:none}
+details.check summary .n{flex-shrink:0;width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:#fff;background:var(--accent)}
+details.check.bonus summary .n{background:var(--pink)}
+details.check p{color:var(--sub);font-size:14px;line-height:1.95;margin:12px 0 0}
+details.check b{color:var(--ink)}
+
+footer{text-align:center;padding:40px 0 60px;color:var(--sub);font-size:13px;line-height:2}
+footer .hearts{font-size:16px}
+#toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;
+  border-radius:999px;padding:11px 22px;font-size:14px;opacity:0;transition:.35s;z-index:99;pointer-events:none;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* ===== 强制刷新组件（规范见 reference/强制刷新组件.md） ===== */
+.refresh-box{position:fixed;top:14px;right:14px;z-index:60;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.refresh-box button{border:none;cursor:pointer;border-radius:12px;padding:9px 16px;font-size:13px;letter-spacing:1px;
+  background:linear-gradient(135deg,#7C6CF0,#9B6CF0);color:#fff;box-shadow:0 8px 20px -6px rgba(124,108,240,.5)}
+.refresh-box button:hover{filter:brightness(1.07)}
+.refresh-box .verline{max-width:300px;background:rgba(255,255,255,.92);border:1px solid var(--line,#E8DECB);border-radius:10px;
+  padding:7px 12px;font-size:11.5px;color:#7A6F60;line-height:1.6;text-align:right}
+.refresh-box .verline b{color:#2B2620}
+@media (max-width:860px){.refresh-box .verline{display:none}}
+</style>
+</head>
+<body>
+<div class="refresh-box">
+  <button id="refreshBtn" type="button">🔄 一键刷新</button>
+  <div class="verline">🧾 <b id="verDate">检查更新中…</b>：<span id="verNote"></span><br>⚠️ 静态网页有缓存，请勤点「一键刷新」</div>
+</div>
+
+
+<header class="wrap">
+  <div class="badge">✨ 基于 <b>6 份开题样例</b> 的选题规律 · 纯本地运行 · 灵感自动保存</div>
+  <h1 class="serif"><span class="star">✨</span> 毕设选题发散器 <span style="font-size:.6em">🍮</span></h1>
+  <p class="tagline">不是帮你做决定，是帮你把思维的网撒开。<br>
+  摇出来的组合 90% 是废案，但剩下 10% 里藏着你搜肠刮肚也想不出来的那个。</p>
+  <div class="formula-ribbon serif">
+    前辈们的万能命名公式：<code>议题</code> × <code>形式</code> × <code>视角</code> × <code>受众</code><br>
+    例如「长江文化视角下的 <b>武汉水系记忆</b> <b>交互装置</b> 设计研究」——四个轴各转一格，就是一个新题目。
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ============ 1. 摇号机 ============ -->
+<section id="machine">
+  <div class="sec-head"><span class="no">01</span><h2 class="serif">四轴摇号机</h2></div>
+  <p class="sec-sub">四个轴独立随机。看到有点感觉的轴就点 🔒 锁住，只摇剩下的——发散和收敛一键切换。</p>
+  <div class="machine-grid" id="wheels"></div>
+  <div class="machine-bar">
+    <button class="btn" id="rollBtn">🎲 &nbsp;摇一个组合</button>
+    <button class="btn ghost" id="rerollTitle">↻ 换个说法</button>
+    <span class="hint">提示：锁轴 → 连摇十次 → 把「第一眼不舒服但第二眼有意思」的记下来</span>
+  </div>
+
+  <div class="result" id="result">
+    <div class="cap">— 本轮组合 —</div>
+    <div class="title serif" id="resultTitle"></div>
+    <div class="parts" id="resultParts"></div>
+    <div class="ops">
+      <button class="btn small" id="saveBtn">⭐ 收藏这个灵感</button>
+      <button class="btn ghost small" id="copyBtn">📋 复制</button>
+    </div>
+  </div>
+
+  <details class="bank">
+    <summary>✎ 编辑词库（自己的弹药自己造，增删都自动保存）</summary>
+    <div class="bank-grid" id="bankGrid"></div>
+  </details>
+</section>
+
+<!-- ============ 2. 催化剂 ============ -->
+<section id="catalyst">
+  <div class="sec-head"><span class="no">02</span><h2 class="serif">发散催化剂</h2></div>
+  <p class="sec-sub">对着摇出来的组合问自己这些问题。催化剂不产生答案，它拆掉你脑子里的墙。</p>
+  <div class="cat-grid" id="catGrid"></div>
+  <div class="machine-bar"><button class="btn ghost" id="catBtn">🔀 换一批问题</button></div>
+</section>
+
+<!-- ============ 3. 收藏夹 ============ -->
+<section id="saved">
+  <div class="sec-head"><span class="no">03</span><h2 class="serif">灵感收藏夹</h2></div>
+  <p class="sec-sub">收藏的灵感用五个维度打分（点星星）。均分 ≥ 4 → 可以约导师聊了；3~4 → 再发散一轮；&lt; 3 → 回炉。</p>
+  <div class="saved-bar" id="savedBar" style="display:none">
+    <button class="btn ghost small" id="exportBtn">📋 复制全部</button>
+  </div>
+  <div id="savedList"></div>
+</section>
+
+<!-- ============ 4. 前辈公式 ============ -->
+<section id="formula">
+  <div class="sec-head"><span class="no">04</span><h2 class="serif">前辈的公式</h2></div>
+  <p class="sec-sub">6 份开题样例的拆解。注意他们全都敢把两个轴绑得很紧（比如「戏曲 × MG动画」），也从没人做过纯开发题。</p>
+  <div class="table-card">
+    <table>
+      <thead><tr><th style="width:90px">同学</th><th>题目</th><th style="width:260px">四轴拆解</th><th style="width:200px">一句话点评</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ 5. 三问自检 ============ -->
+<section id="check">
+  <div class="sec-head"><span class="no">05</span><h2 class="serif">三问 + 两问自检</h2></div>
+  <p class="sec-sub">发散完用这五问过滤。前三问是硬门槛，挂任何一问就直接换；后两问是加分项。</p>
+  <div class="check-list" id="checkList"></div>
+</section>
+
+</main>
+
+<footer>
+  <div class="hearts">🐟 ✨ 🍮</div>
+  捞鱼 &amp; 星星布丁的毕设选题工坊 · 灵感数据只存在这台浏览器里（localStorage）<br>
+  发散是手段，那个让你愿意做一年的题目才是目的
+</footer>
+
+<div id="toast"></div>
+
+<script>
+"use strict";
+/* ================= 数据 ================= */
+const KEYS = ["theme","form","lens","audience"];
+const META = {
+  theme:{label:"议 题",icon:"🌿"},
+  form:{label:"形 式",icon:"🎨"},
+  lens:{label:"视 角",icon:"🔍"},
+  audience:{label:"受 众",icon:"💌"}
+};
+const DEFAULT_BANKS = {
+  theme:["长江水文化","武汉码头文化","知音文化","汉绣非遗","湖北地方戏曲","二十四节气","一粒稻的旅程","盐碱地生态修复","湿地候鸟保护","食物里程","校园植物图鉴","校史记忆","城中村记忆","空巢老人","乡村留守儿童","大学生心理健康","经期健康科普","宠物领养","无障碍出行","老字号焕新","天文科普","睡眠与作息","快递包装循环","方言保护","长江大桥工业遗产","阳台都市农耕","非遗手艺人","江豚保护"],
+  form:["科普绘本","IP形象与文创周边","MG动画","实体交互装置","交互叙事网页","游戏化盲盒测试","社群平台UI/UX","微信表情包体系","数据可视化长卷","AR互动滤镜","信息图表设计","纪录短片与动态海报","展览视觉系统","品牌焕新VI","实验字体设计","桌游卡牌","潮玩手办","声音交互播客"],
+  lens:["情感化设计","服务设计","无障碍包容设计","可持续设计","游戏化学习","叙事设计","数据艺术","文旅融合","Z世代传播","亲子共学","在地文化","长江文化","数字人文","五感体验"],
+  audience:["8-10岁儿童","青少年","Z世代","亲子家庭","空巢老人","大学生","城市新移民","残障群体","宠物家庭","非遗手艺人"]
+};
+const TEMPLATES = [
+  p=>`「${p.theme}」${p.form}设计——面向${p.audience}`,
+  p=>`${p.lens}视角下的${p.theme}${p.form}设计`,
+  p=>`「${p.theme}」主题${p.form}——为${p.audience}而作`,
+  p=>`${p.theme} × ${p.form}：一场面向${p.audience}的${p.lens}实验`,
+  p=>`面向${p.audience}的${p.theme}${p.form}——基于${p.lens}视角`
+];
+const CATALYSTS = [
+  ["🧒","把受众换成 8 岁小孩 / 换成祖父母，方案会怎么变？哪一版更有真情实感？"],
+  ["💸","如果总预算只有 ¥500，你砍掉什么、留下什么？留下来的就是这件事的骨架。"],
+  ["🧩","如果成品必须是「系列」而不是「单品」，你的最小系列是什么？"],
+  ["🤖","加一层 AI 会发生什么？生成、识别、对话、陪伴——哪一种和你的议题天然契合？"],
+  ["⏱️","用户只能停留 3 分钟，你保留哪个瞬间？那个瞬间值得做一年吗？"],
+  ["🔄","反着来：先锁定你最想做的形式，再倒着找议题——和顺着找，结果差在哪？"],
+  ["👀","这个议题里最被忽视的一群人是谁？只为他们改一版会怎样？"],
+  ["🤝","如果作品必须在答辩现场被评委亲手玩到，你的设计重心会移到哪里？"],
+  ["🌡️","把「科普」换成「共情」，把「宣传」换成「陪伴」，题目气质变了吗？"],
+  ["👂","这个议题里有声音的部分吗？气味呢？触感呢？非视觉的一轴往往就是创新点。"],
+  ["📆","如果它一年后还要有人用，最该补的是什么？这个问题筛掉多少「展完即弃」的方案？"],
+  ["📣","哪一步可以先做成表情包或小周边发出去测水温？低成本试错，高分答辩。"],
+  ["🧬","把两位前辈的题目杂交（戏曲MG动画 × 长江交互装置 = ？），你得到什么怪物？"],
+  ["🖤","如果只保留黑白两色，你的设计还站得住吗？站不住说明依赖的是装饰不是设计。"],
+  ["🔬","能不能把调研过程本身做成作品的一部分？问卷、访谈、田野笔记可视化。"],
+  ["🏘️","如果面向的不是抽象的「用户」，而是「同一条街上具体的一群人」呢？"]
+];
+const SAMPLES = [
+  ["同学A（绘本）","「盐碱地开出油菜花」农业科普儿童绘本设计","盐碱地油菜花 × 科普绘本 × 8-10岁儿童","傅院士课题背书，科学性拉满；农业是华农的舒适区"],
+  ["同学B（文创）","「玩游一宙」上海天文馆系列文创周边","天文科普 × IP文创 × 游客/青少年","一个IP吃下七类周边，系列感是答辩护城河"],
+  ["同学C（动画）","「仅存于照片里的戏」湖北地方戏曲图形动画","湖北戏曲 × MG动画 × 大众传播","四张照片四段色调，叙事结构本身就是设计"],
+  ["同学D（装置）","长江文化视域下武汉水系记忆交互装置设计研究","长江水文化 × 交互装置 × 长江文化视角","文献框架先行（五大特质选水域），学术味最浓"],
+  ["同学E（社群）","「结巢」城区空巢老人养老困境社群设计","空巢老人 × 插画+社群平台UI/UX × 老年群体","插画负责共情、平台负责方案，两条腿走路"],
+  ["科普动画","科普动画开题报告（.doc）","科普 × 动画 × —","导师组对科普题材很熟，这类题问得住也答得出"]
+];
+const CHECKS = [
+  ["导师熟不熟这个题型？",["答辩评委是这个组里的老师。选题在他们熟悉的谱系内（科普/文创/动画/交互装置/社群），他们才问得住、也才指导得了。","反例：纯算法、纯后台系统——你做得很爽，但设计学院的答辩桌上没人能替你说好话。"],false],
+  ["过程够不够「设计」？",["开题到答辩要看的是链条：调研 → 分析 → 方案 → 迭代 → 验证。技术是「表现手法」，不是主题本身。","自检：你的过程里有没有问卷调查、田野、案例对比、用户反馈迭代？全是写代码的月份就危险了。"],false],
+  ["一个人一学年做得完吗？",["样例们的工作量都是「一个人 + 一个学期主体制作 + 一个学期论文」。实体装置要算物料和失败重来的时间。","把题目按月拆一遍：调研1-2月、设计3月、制作2-3月、论文与答辩材料1-2月，超了就砍轴。"],false],
+  ["你对它有真情实感吗？",["能做一年的题目，起点往往是你自己真在意的事。硬选题最大的风险不是做不完，是十一月之后不想做了。","加分判断：不拿学分你还会不会想做它？"],true],
+  ["答辩时能不能真机演示？", ["别的同学展示效果图，你的作品如果现场就能被评委点开玩，是降维打击——前提是它稳。","这条是捞鱼的技术优势区：交互网页、测试、表情包、机器人，都做得出来。"],true]
+];
+const SCORE_DIMS = ["导师熟悉","过程感","工作量可控","个人热情","技术演示"];
+
+/* ================= 状态 ================= */
+const STORE_KEY = "bishe_fasan_v1";
+let state = load();
+function load(){
+  try{
+    const s = JSON.parse(localStorage.getItem(STORE_KEY));
+    if(s && s.banks && s.saved) return s;
+  }catch(e){}
+  return {banks:JSON.parse(JSON.stringify(DEFAULT_BANKS)), saved:[]};
+}
+function save(){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+
+const wheels = {}; // key -> {locked, current}
+let currentParts = null, currentTplIdx = 0;
+
+/* ================= 工具 ================= */
+const $ = s=>document.querySelector(s);
+function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function toast(msg){
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove("show"), 2200);
+}
+function esc(s){ return s.replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+/* ================= 摇号机 ================= */
+function initWheels(){
+  const box = $("#wheels"); box.innerHTML = "";
+  KEYS.forEach((k,i)=>{
+    const d = document.createElement("div");
+    d.className = "wheel"; d.id = "w-"+k;
+    d.innerHTML = `
+      <div class="wheel-head">
+        <span class="k">${META[k].icon} ${META[k].label}</span>
+        <button title="锁定/解锁这一轴" data-lock="${k}">🔓</button>
+      </div>
+      <div class="wheel-word serif" id="word-${k}">${esc(rand(state.banks[k]))}</div>
+      <div class="wheel-tags"><span>词库 ${state.banks[k].length} 个</span></div>`;
+    box.appendChild(d);
+    wheels[k] = {locked:false};
+    d.querySelector("[data-lock]").addEventListener("click", e=>{
+      wheels[k].locked = !wheels[k].locked;
+      e.currentTarget.textContent = wheels[k].locked ? "🔒" : "🔓";
+      d.classList.toggle("locked", wheels[k].locked);
+      toast(wheels[k].locked ? `已锁「${META[k].label}」轴` : `已解锁「${META[k].label}」轴`);
+    });
+  });
+}
+let rolling = false;
+function roll(){
+  if(rolling) return;
+  const unlocked = KEYS.filter(k=>!wheels[k].locked);
+  if(!unlocked.length){ toast("四根轴都锁住啦，解锁至少一根再摇 🗝️"); return; }
+  rolling = true;
+  $("#result").classList.remove("show");
+  currentParts = null;
+  const finals = {};
+  unlocked.forEach((k,j)=>{
+    const bank = state.banks[k];
+    let f; do{ f = rand(bank); }while(bank.length>1 && f === $("#word-"+k).textContent);
+    finals[k] = f;
+    const el = $("#word-"+k), card = $("#w-"+k);
+    card.classList.add("settling");
+    const dur = 520 + j*330;
+    const iv = setInterval(()=>{ el.textContent = rand(bank); }, 70);
+    setTimeout(()=>{
+      clearInterval(iv);
+      el.textContent = f;
+      el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop");
+      card.classList.remove("settling");
+      if(j === unlocked.length-1){ rolling = false; composeTitle(unlocked); }
+    }, dur);
+  });
+}
+function composeTitle(unlockedKeys){
+  const parts = {};
+  KEYS.forEach(k=> parts[k] = $("#word-"+k).textContent);
+  currentParts = parts;
+  currentTplIdx = Math.floor(Math.random()*TEMPLATES.length);
+  const title = TEMPLATES[currentTplIdx](parts);
+  $("#resultTitle").textContent = title;
+  $("#resultParts").innerHTML = KEYS.map(k=>
+    `<span>${META[k].icon} <b>${esc(parts[k])}</b></span>` +
+    (unlockedKeys && !unlockedKeys.includes(k) ? "" : "")
+  ).join("") + `<span style="border-style:dashed">本轮动了：${unlockedKeys.map(k=>META[k].label.trim()).join(" / ")}</span>`;
+  $("#result").classList.add("show");
+}
+function rerollTpl(){
+  if(!currentParts) return;
+  currentTplIdx = (currentTplIdx + 1 + Math.floor(Math.random()*(TEMPLATES.length-1))) % TEMPLATES.length;
+  $("#resultTitle").textContent = TEMPLATES[currentTplIdx](currentParts);
+}
+
+/* ================= 词库 ================= */
+function renderBanks(){
+  const g = $("#bankGrid"); g.innerHTML = "";
+  KEYS.forEach(k=>{
+    const col = document.createElement("div");
+    col.innerHTML = `<h4>${META[k].icon} ${META[k].label}（${state.banks[k].length}）</h4>
+      <div class="chips" id="chips-${k}"></div>
+      <div class="bank-add">
+        <input id="add-${k}" maxlength="20" placeholder="加一个词，回车也行">
+        <button data-add="${k}">＋添加</button>
+      </div>`;
+    g.appendChild(col);
+    const chips = col.querySelector("#chips-"+k);
+    state.banks[k].forEach((w,idx)=>{
+      const c = document.createElement("span");
+      c.className = "chip"; c.innerHTML = `${esc(w)}<i title="删除">✕</i>`;
+      c.querySelector("i").addEventListener("click", ()=>{
+        if(state.banks[k].length<=1){ toast("至少保留一个词"); return; }
+        state.banks[k].splice(idx,1); save(); renderBanks(); refreshTag(k);
+      });
+      chips.appendChild(c);
+    });
+    col.querySelector("[data-add]").addEventListener("click", ()=>addWord(k));
+    col.querySelector("#add-"+k).addEventListener("keydown", e=>{ if(e.key==="Enter") addWord(k); });
+  });
+}
+function addWord(k){
+  const inp = $("#add-"+k), v = inp.value.trim();
+  if(!v) return;
+  if(state.banks[k].includes(v)){ toast("这个词已经在啦"); inp.value=""; return; }
+  state.banks[k].push(v); save(); renderBanks(); refreshTag(k);
+  inp.value = ""; toast(`已加入「${META[k].label}」：${v}`);
+}
+function refreshTag(k){
+  const t = $("#w-"+k).querySelector(".wheel-tags span");
+  if(t) t.textContent = `词库 ${state.banks[k].length} 个`;
+}
+
+/* ================= 催化剂 ================= */
+let catOrder = [];
+function shuffleCats(){
+  catOrder = CATALYSTS.map((_,i)=>i).sort(()=>Math.random()-.5);
+  renderCats();
+}
+function renderCats(){
+  const g = $("#catGrid"); g.innerHTML = "";
+  for(let i=0;i<3;i++){
+    const [emo,txt] = CATALYSTS[catOrder[i]];
+    const d = document.createElement("div");
+    d.className = "cat-card";
+    d.innerHTML = `<div class="emo">${emo}</div><p>${esc(txt)}</p><div class="idx">催化剂 №${String(catOrder[i]+1).padStart(2,"0")}</div>`;
+    g.appendChild(d);
+  }
+}
+
+/* ================= 收藏夹 ================= */
+function saveIdea(){
+  if(!currentParts) return;
+  const title = $("#resultTitle").textContent;
+  state.saved.unshift({
+    id: Date.now(), title, parts:{...currentParts},
+    scores: SCORE_DIMS.map(()=>0)
+  });
+  save(); renderSaved();
+  toast("已收藏 ⭐ 去下面给它打分吧");
+}
+function scoreAvg(idea){ const s = idea.scores; return s.reduce((a,b)=>a+b,0)/s.length; }
+function verdict(avg){
+  if(avg===0) return `<span class="verdict mid">🫥 还没打分</span>`;
+  if(avg>=4) return `<span class="verdict go">✅ 可以约导师聊了</span>`;
+  if(avg>=3) return `<span class="verdict mid">🔄 再发散一轮</span>`;
+  return `<span class="verdict re">🧯 回炉重造</span>`;
+}
+function renderSaved(){
+  const box = $("#savedList");
+  $("#savedBar").style.display = state.saved.length ? "flex" : "none";
+  if(!state.saved.length){
+    box.innerHTML = `<div class="saved-empty">还没收藏任何灵感。<br>去摇号机那里，把「第一眼不舒服但第二眼有意思」的组合留下来。</div>`;
+    return;
+  }
+  box.innerHTML = "";
+  state.saved.forEach((idea,i)=>{
+    const d = document.createElement("div");
+    d.className = "idea";
+    d.innerHTML = `
+      <div class="idea-top">
+        <div>
+          <div class="t serif">${esc(idea.title)}</div>
+          <div class="meta">${idea.parts.theme} · ${idea.parts.form} · ${idea.parts.lens} · ${idea.parts.audience}　｜　收藏于 ${new Date(idea.id).toLocaleString("zh-CN",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})}</div>
+        </div>
+        <div class="ops"><button data-del="${i}">🗑 移除</button></div>
+      </div>
+      <div class="score-rows">
+        ${SCORE_DIMS.map((lab,j)=>`
+          <div class="score-cell">
+            <div class="lab">${lab}</div>
+            <div class="stars" data-idea="${i}" data-dim="${j}">
+              ${[1,2,3,4,5].map(v=>`<span data-v="${v}" class="${idea.scores[j]>=v?"on":""}">★</span>`).join("")}
+            </div>
+          </div>`).join("")}
+      </div>
+      <div style="margin-top:12px">${verdict(scoreAvg(idea))} <span style="font-size:12px;color:var(--sub)">均分 ${scoreAvg(idea).toFixed(1)}</span></div>`;
+    box.appendChild(d);
+  });
+  box.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click", ()=>{
+    state.saved.splice(+b.dataset.del,1); save(); renderSaved(); toast("已移除");
+  }));
+  box.querySelectorAll(".stars span").forEach(st=>st.addEventListener("click", ()=>{
+    const idea = state.saved[+st.closest(".stars").dataset.idea];
+    idea.scores[+st.closest(".stars").dataset.dim] = +st.dataset.v;
+    save(); renderSaved();
+  }));
+}
+function exportAll(){
+  if(!state.saved.length){ toast("收藏夹还是空的"); return; }
+  const txt = "毕设选题发散器 · 收藏的灵感\n" + state.saved.map((s,i)=>
+    `${i+1}. ${s.title}\n   四轴：${s.parts.theme} / ${s.parts.form} / ${s.parts.lens} / ${s.parts.audience}\n   打分：${SCORE_DIMS.map((d,j)=>d+" "+s.scores[j]+"/5").join("，")}（均分 ${scoreAvg(s).toFixed(1)}）`
+  ).join("\n");
+  copyText(txt);
+}
+function copyText(t){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(()=>toast("已复制到剪贴板 📋"), ()=>fallbackCopy(t));
+  }else fallbackCopy(t);
+}
+function fallbackCopy(t){
+  const ta = document.createElement("textarea");
+  ta.value = t; document.body.appendChild(ta); ta.select();
+  try{ document.execCommand("copy"); toast("已复制到剪贴板 📋"); }
+  catch(e){ toast("复制失败，手动选一下吧"); }
+  document.body.removeChild(ta);
+}
+
+/* ================= 样例 & 自检 ================= */
+function renderSamples(){
+  $("#tbody").innerHTML = SAMPLES.map(([who,title,decomp,note])=>{
+    const [a,b,c] = decomp.split(" × ");
+    return `<tr>
+      <td><span class="who">${who}</span></td>
+      <td class="serif">${esc(title)}</td>
+      <td><span class="decomp"><b>${esc(a||"")}</b> × <b>${esc(b||"")}</b> × <b>${esc(c||"")}</b></span></td>
+      <td><span class="decomp">${esc(note)}</span></td>
+    </tr>`;
+  }).join("");
+}
+function renderChecks(){
+  $("#checkList").innerHTML = CHECKS.map(([q,paras,bonus],i)=>`
+    <details class="check ${bonus?"bonus":""}" ${i===0?"open":""}>
+      <summary><span class="n">${i+1}</span>${esc(q)}${bonus?'<span style="font-size:11px;color:var(--pink);margin-left:auto;flex-shrink:0">加分项</span>':""}</summary>
+      ${paras.map(p=>`<p>${esc(p)}</p>`).join("")}
+    </details>`).join("");
+}
+
+/* ================= 启动 ================= */
+initWheels(); renderBanks(); shuffleCats(); renderSaved(); renderSamples(); renderChecks();
+$("#rollBtn").addEventListener("click", roll);
+$("#rerollTitle").addEventListener("click", rerollTpl);
+$("#saveBtn").addEventListener("click", saveIdea);
+$("#copyBtn").addEventListener("click", ()=>{ if(currentParts) copyText($("#resultTitle").textContent); });
+$("#catBtn").addEventListener("click", shuffleCats);
+$("#exportBtn").addEventListener("click", exportAll);
+document.addEventListener("keydown", e=>{
+  if(e.code==="Space" && e.target===document.body){ e.preventDefault(); roll(); }
+});
+</script>
+<script>
+/* ===== 强制刷新组件 =====
+   改版时：同步更新本文件 PAGE_VERSION 与根目录 version.json 的 version/changelog，缺一不算完成 */
+const PAGE_VERSION = 1;
+(function checkVersion(){
+  fetch("version.json?t=" + Date.now())
+    .then(r => r.json())
+    .then(remote => {
+      const vd = document.getElementById("verDate"), vn = document.getElementById("verNote");
+      if (remote.version !== undefined) {
+        vd.textContent = "最近更新 " + (remote.date || "");
+        vn.textContent = (remote.changelog || [])[0] || "";
+      }
+      const remoteV = parseInt(remote.version || 0, 10);
+      if (remoteV > PAGE_VERSION) {
+        /* 防循环：每个目标版本每会话最多自动刷新一次 */
+        const key = "xuanti_refreshed_for";
+        if (sessionStorage.getItem(key) !== String(remoteV)) {
+          sessionStorage.setItem(key, String(remoteV));
+          const p = new URLSearchParams(location.search);
+          p.set("v", remoteV + "." + Date.now());
+          location.replace(location.pathname + "?" + p.toString());
+        }
+      }
+    })
+    .catch(() => { const vn = document.getElementById("verNote"); if (vn) vn.textContent = "（更新检查失败，不影响使用）"; });
+})();
+document.getElementById("refreshBtn").addEventListener("click", function(){
+  const p = new URLSearchParams(location.search);
+  p.set("v", Date.now());
+  location.replace(location.pathname + "?" + p.toString());
+});
+</script>
+</body>
+</html>

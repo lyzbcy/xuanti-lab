@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>毕设选题 · 发散思维导图 ✨</title>
+<style>
+:root{
+  --bg:#FAF5EC; --ink:#2B2620; --sub:#7A6F60; --card:#FFFFFF; --line:#E8DECB;
+  --accent:#7C6CF0; --shadow:0 10px 30px -12px rgba(80,60,30,.22);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden}
+body{
+  font-family:"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+  background:
+    radial-gradient(1100px 480px at 88% -8%, #F1EAFF 0%, transparent 60%),
+    radial-gradient(900px 420px at -8% 108%, #FDEFF4 0%, transparent 55%),
+    var(--bg);
+  color:var(--ink);
+}
+.serif{font-family:"Noto Serif SC","Songti SC","STSong","SimSun",serif}
+#stage{position:fixed;inset:0;touch-action:none;cursor:grab}
+#stage.panning{cursor:grabbing}
+svg{width:100%;height:100%;display:block}
+
+/* 工具栏 */
+.toolbar{position:fixed;top:16px;left:16px;z-index:10;display:flex;flex-direction:column;gap:8px}
+.tb{width:44px;height:44px;border:none;border-radius:14px;background:var(--card);box-shadow:var(--shadow);
+  cursor:pointer;font-size:18px;color:var(--ink);display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--line);transition:background .15s}
+.tb:hover{background:#F4EDFE}
+.tb.wide{width:auto;padding:0 18px;font-size:14px;letter-spacing:1px;background:linear-gradient(135deg,#7C6CF0,#9B6CF0);color:#fff;border:none}
+.tb.wide:hover{filter:brightness(1.06)}
+
+/* 顶部标题 */
+.masthead{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9;text-align:center;pointer-events:none}
+.masthead h1{margin:0;font-size:clamp(17px,2.6vw,24px);letter-spacing:2px}
+.masthead p{margin:4px 0 0;font-size:12px;color:var(--sub)}
+
+/* 随机路径横幅 */
+#pathBanner{position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(120px);z-index:10;
+  max-width:min(860px,92vw);background:var(--ink);color:#fff;border-radius:16px;padding:13px 46px 13px 20px;
+  font-size:14px;line-height:1.7;box-shadow:0 14px 34px -10px rgba(0,0,0,.4);transition:transform .4s cubic-bezier(.2,1,.3,1);cursor:default}
+#pathBanner.show{transform:translateX(-50%) translateY(0)}
+#pathBanner b{color:#C9B7FF}
+#pathBanner .cap{color:#9C8F85;font-size:11px;letter-spacing:2px;display:block;margin-bottom:3px}
+#pathBanner .x{position:absolute;right:12px;top:10px;border:none;background:none;color:#9C8F85;font-size:15px;cursor:pointer;padding:4px}
+#pathBanner .x:hover{color:#fff}
+
+/* 详情面板 */
+#detail{position:fixed;right:16px;top:100px;z-index:10;width:min(300px,78vw);background:var(--card);
+  border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px 18px;
+  display:none;font-size:13px;line-height:1.8}
+#detail.show{display:block}
+#detail .crumb{color:var(--sub);font-size:11px;margin-bottom:6px;line-height:1.6}
+#detail .lab{font-size:15px;font-weight:700;margin-bottom:6px}
+#detail .note{color:var(--sub);white-space:pre-wrap}
+
+/* 图例 */
+.legend{position:fixed;bottom:14px;right:16px;z-index:9;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;
+  max-width:min(560px,60vw);pointer-events:none}
+.legend span{font-size:11px;color:var(--sub);background:rgba(255,255,255,.8);border:1px solid var(--line);
+  border-radius:999px;padding:3px 10px;backdrop-filter:blur(2px)}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;font-style:normal;vertical-align:1px}
+
+/* 节点 */
+.node rect{transition:fill .12s}
+.node{cursor:pointer}
+.node text{pointer-events:none}
+.node .plus{font-size:11px;fill:#fff}
+.node.dim{opacity:.45}
+.node.hot rect{stroke-width:3;filter:drop-shadow(0 0 6px rgba(124,108,240,.65))}
+.link{fill:none;stroke:#C9BB9F;stroke-width:1.6;opacity:.55}
+.link.hot{stroke:#7C6CF0;stroke-width:3;opacity:1}
+@media (max-width:720px){
+  .masthead p{display:none}
+  .legend{display:none}
+}
+
+/* ===== 强制刷新组件（规范见 reference/强制刷新组件.md） ===== */
+.refresh-box{position:fixed;top:14px;right:14px;z-index:60;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.refresh-box button{border:none;cursor:pointer;border-radius:12px;padding:9px 16px;font-size:13px;letter-spacing:1px;
+  background:linear-gradient(135deg,#7C6CF0,#9B6CF0);color:#fff;box-shadow:0 8px 20px -6px rgba(124,108,240,.5)}
+.refresh-box button:hover{filter:brightness(1.07)}
+.refresh-box .verline{max-width:300px;background:rgba(255,255,255,.92);border:1px solid var(--line,#E8DECB);border-radius:10px;
+  padding:7px 12px;font-size:11.5px;color:#7A6F60;line-height:1.6;text-align:right}
+.refresh-box .verline b{color:#2B2620}
+@media (max-width:860px){.refresh-box .verline{display:none}}
+</style>
+</head>
+<body>
+<div class="refresh-box">
+  <button id="refreshBtn" type="button">🔄 一键刷新</button>
+  <div class="verline">🧾 <b id="verDate">检查更新中…</b>：<span id="verNote"></span><br>⚠️ 静态网页有缓存，请勤点「一键刷新」</div>
+</div>
+
+
+<div class="masthead">
+  <h1 class="serif">✨ 毕设选题 · 发散思维导图</h1>
+  <p>点节点展开 / 收起 · 拖拽平移 · 滚轮缩放 · 先撒网（①-④），再收网（⑤）</p>
+</div>
+
+<div class="toolbar">
+  <button class="tb" id="zoomIn" title="放大">＋</button>
+  <button class="tb" id="zoomOut" title="缩小">－</button>
+  <button class="tb" id="fit" title="回到全景">⤢</button>
+  <button class="tb wide" id="dice" title="随机点亮一条组合路径">🎲 随机走一条路</button>
+</div>
+
+<div id="detail"></div>
+<div id="pathBanner"></div>
+<div class="legend" id="legend"></div>
+
+<div id="stage"><svg id="map"><g id="viewport"></g></svg></div>
+
+<script>
+"use strict";
+/* ================= 数据 ================= */
+const PALETTES = {
+  source:{c:"#5FA87A",bg:"#EAF5EE",name:"① 议题"},
+  form:{c:"#7C6CF0",bg:"#EFECFE",name:"② 题型"},
+  formula:{c:"#E0729A",bg:"#FCEEF4",name:"③ 组合"},
+  tech:{c:"#4E8FD6",bg:"#E9F2FC",name:"④ 技术"},
+  filter:{c:"#D99431",bg:"#FBF1DE",name:"⑤ 过滤"},
+  tips:{c:"#3AA6A0",bg:"#E7F5F4",name:"⑥ 技巧"}
+};
+const TREE = {
+  id:"root", label:"毕设选题", note:"六条主枝：①-④ 负责「撒网」，⑤ 负责「收网」，⑥ 负责卡住的时候。",
+  children:[
+  { id:"source", key:"source", label:"议题从哪来", note:"六个源头，每个源头强制自己写满 3 个具体词——撒网要撒满。",
+    children:[
+      { id:"src-1", label:"自己的真情实感", note:"不拿学分还想做的题，才熬得过十一月。加分问：你对它有感觉吗？",
+        children:[
+          {id:"src-1a", label:"你们的日常与纪念"},
+          {id:"src-1b", label:"你长期在意的群体"},
+          {id:"src-1c", label:"你踩过 / 修过的坑"}
+        ]},
+      { id:"src-2", label:"身边具体的人", note:"「同一条街上的人」比抽象的「用户」更有设计感，也更好调研。",
+        children:[
+          {id:"src-2a", label:"家人 / 长辈"},
+          {id:"src-2b", label:"同学 / 室友"},
+          {id:"src-2c", label:"社区 / 街道 / 宠物"}
+        ]},
+      { id:"src-3", label:"华农特色", note:"答辩舒适区：文献好找、评委问得住、案例多。同学A 的傅院士课题背书就是模板。",
+        children:[
+          {id:"src-3a", label:"农业科普（一粒稻的旅程）"},
+          {id:"src-3b", label:"校园植物 / 校史"},
+          {id:"src-3c", label:"院士课题背书"}
+        ]},
+      { id:"src-4", label:"武汉 / 长江", note:"同学D 模式的富矿：一个水域一个故事，文献框架先行。",
+        children:[
+          {id:"src-4a", label:"长江水文化 / 湿地"},
+          {id:"src-4b", label:"码头 / 知音文化"},
+          {id:"src-4c", label:"方言 / 汉绣 / 戏曲非遗"}
+        ]},
+      { id:"src-5", label:"社会议题", note:"同学E 模式：插画负责共情，平台负责给出方案。",
+        children:[
+          {id:"src-5a", label:"老龄化 / 空巢老人"},
+          {id:"src-5b", label:"心理健康 / 睡眠"},
+          {id:"src-5c", label:"无障碍 / 包容"},
+          {id:"src-5d", label:"可持续 / 循环"}
+        ]},
+      { id:"src-6", label:"导师组熟谱系", note:"导师组样例的安全区：科普 / 文创 / 动画 / 装置 / 社群。落在谱系内，指导才跟得上。",
+        children:[
+          {id:"src-6a", label:"科普传播"},
+          {id:"src-6b", label:"文创产品"},
+          {id:"src-6c", label:"动画影像"},
+          {id:"src-6d", label:"交互装置"},
+          {id:"src-6e", label:"社群平台"}
+        ]}
+    ]},
+  { id:"form", key:"form", label:"五种题型（前辈已验证）", note:"前五个都有开题样例背书；第六个是把任意题型搬到线上——你们的技术优势区。",
+    children:[
+      { id:"form-1", label:"科普绘本", note:"同学A｜农业 + 儿童，科学性是命门｜工作量：中"},
+      { id:"form-2", label:"IP 形象与文创周边", note:"同学B｜一个 IP 吃下七类周边，系列感 = 答辩护城河｜工作量：中偏大"},
+      { id:"form-3", label:"MG / 图形动画", note:"同学C｜四张照片四段色调，叙事结构本身就是设计｜工作量：大"},
+      { id:"form-4", label:"交互装置 / 数据艺术", note:"同学D｜文献框架先行，学术味最浓｜成本：高"},
+      { id:"form-5", label:"插画 + 社群平台", note:"同学E｜插画管共情、平台管方案，两条腿走路｜工作量：双线"},
+      { id:"form-6", label:"（加分）纯线上交互", note:"把上面任意题型做成 Web / 小程序：答辩现场真机演示，降维打击。"}
+    ]},
+  { id:"formula", key:"formula", label:"组合公式：议题×形式×视角×受众", note:"四个轴各转一格就是一个新题目。同学D = 长江文化视角 + 武汉水系记忆 + 交互装置。",
+    children:[
+      { id:"lens", label:"视角（转一格）", children:[
+        {id:"lens-1", label:"情感化 / 叙事"},{id:"lens-2", label:"服务设计"},
+        {id:"lens-3", label:"游戏化学习"},{id:"lens-4", label:"可持续"},
+        {id:"lens-5", label:"无障碍包容"},{id:"lens-6", label:"数据艺术"},
+        {id:"lens-7", label:"在地文化"}
+      ]},
+      { id:"aud", label:"受众（换一拨人）", children:[
+        {id:"aud-1", label:"8-10 岁儿童"},{id:"aud-2", label:"亲子家庭"},
+        {id:"aud-3", label:"Z 世代"},{id:"aud-4", label:"空巢老人"},
+        {id:"aud-5", label:"非遗手艺人"},{id:"aud-6", label:"残障群体"}
+      ]}
+    ]},
+  { id:"tech", key:"tech", label:"技术加分项（捞鱼的优势区）", note:"技术永远是「表现手法」，不抢设计的主体地位——过程里要有调研和迭代，不能全是敲代码的月份。",
+    children:[
+      {id:"tech-1", label:"交互叙事 H5 / 长卷"},
+      {id:"tech-2", label:"游戏化测试 / 盲盒机制"},
+      {id:"tech-3", label:"微信表情包体系"},
+      {id:"tech-4", label:"数据可视化"},
+      {id:"tech-5", label:"AI 生成 / 对话"}
+    ]},
+  { id:"filter", key:"filter", label:"过滤器（收网用）", note:"硬门槛挂任何一问就直接换，不要恋战。",
+    children:[
+      { id:"fil-1", label:"硬门槛", children:[
+        {id:"fil-1a", label:"导师熟不熟这个题型", note:"评委问不住 = 指导不了"},
+        {id:"fil-1b", label:"过程够不够「设计」", note:"调研→分析→方案→迭代→验证，缺环危险"},
+        {id:"fil-1c", label:"一年做不做得完", note:"按月拆：调研2 / 设计3 / 制作3 / 论文2"}
+      ]},
+      { id:"fil-2", label:"加分项", children:[
+        {id:"fil-2a", label:"真情实感", note:"不拿学分还想做吗"},
+        {id:"fil-2b", label:"答辩真机演示", note:"别人展示效果图，你让评委亲手玩"}
+      ]}
+    ]},
+  { id:"tips", key:"tips", label:"发散技巧（卡住时用）", note:"催化剂不产生答案，它拆掉你脑子里的墙。配套工具：本站「选题发散器」页",
+    children:[
+      {id:"tip-1", label:"锁住喜欢的轴，只摇剩下的"},
+      {id:"tip-2", label:"换受众 / 换视角各改一版"},
+      {id:"tip-3", label:"两个前辈题目杂交"},
+      {id:"tip-4", label:"预算砍到 ¥500，留下的是骨架"},
+      {id:"tip-5", label:"只留黑白两色，验设计真不真"},
+      {id:"tip-6", label:"把调研过程做成作品一部分"},
+      {id:"tip-7", label:"先做表情包小范围测水温"}
+    ]}
+]};
+
+/* ================= 初始化：默认展开到第 2 层 ================= */
+const byId = {};
+(function init(node, parent, depth){
+  node.parent = parent; node.depth = depth;
+  byId[node.id] = node;
+  node.collapsed = depth >= 2;          // 第3层起默认收起
+  if(node.children) node.children.forEach(c=>init(c, node, depth+1));
+})(TREE, null, 0);
+
+/* ================= 布局 ================= */
+const NODE_H = 38, GAP_Y = 13, GAP_X = 46, CHAR_W = 15.5;
+const svg = document.getElementById("map");
+const vp = document.getElementById("viewport");
+let tx = 0, ty = 0, scale = 1;
+
+function labelW(t){
+  const n = [...String(t)].length;
+  return Math.min(300, Math.max(76, Math.round(n * CHAR_W + 30)));
+}
+function layout(){
+  let cursor = 0;
+  (function walk(node){
+    node.w = labelW(node.label);
+    const kids = node.collapsed ? [] : (node.children || []);
+    if(!kids.length){
+      node.y = cursor + NODE_H / 2;
+      cursor += NODE_H + GAP_Y;
+    }else{
+      kids.forEach(walk);
+      node.y = (kids[0].y + kids[kids.length - 1].y) / 2;
+    }
+  })(TREE);
+  (function walk2(node, x){
+    node.x = x;
+    const kids = node.collapsed ? [] : (node.children || []);
+    kids.forEach(k=>walk2(k, x + node.w + GAP_X));
+  })(TREE, 0);
+}
+function paletteOf(node){
+  let n = node;
+  while(n.parent && n.parent !== TREE) n = n.parent;
+  return PALETTES[n.key] || {c:"#8B7F70", bg:"#F4EFE4"};
+}
+function linkPath(a, b){
+  const x1 = a.x + a.w, y1 = a.y, x2 = b.x, y2 = b.y;
+  const mx = (x1 + x2) / 2;
+  return `M ${x1} ${y1} C ${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}`;
+}
+
+/* ================= 高亮状态 ================= */
+let hotIds = new Set();
+
+function render(){
+  layout();
+  vp.innerHTML = "";
+  const NS = "http://www.w3.org/2000/svg";
+  const linksG = document.createElementNS(NS, "g");
+  const nodesG = document.createElementNS(NS, "g");
+  vp.append(linksG, nodesG);
+
+  (function draw(node){
+    const kids = node.collapsed ? [] : (node.children || []);
+    const pal = node === TREE ? {c:"#3B342C", bg:"#FFFFFF"} : paletteOf(node);
+    const isRoot = node === TREE;
+    const isHot = hotIds.has(node.id);
+
+    for(const k of kids){
+      const p = document.createElementNS(NS, "path");
+      p.setAttribute("d", linkPath(node, k));
+      p.setAttribute("class", "link" + (isHot && hotIds.has(k.id) ? " hot" : ""));
+      linksG.appendChild(p);
+    }
+    const g = document.createElementNS(NS, "g");
+    g.setAttribute("class", "node" + (isHot ? " hot" : ""));
+    g.setAttribute("data-node", node.id);
+    g.setAttribute("transform", `translate(${node.x},${node.y - NODE_H/2})`);
+    const r = document.createElementNS(NS, "rect");
+    r.setAttribute("width", node.w); r.setAttribute("height", NODE_H);
+    r.setAttribute("rx", isRoot ? 19 : 12);
+    r.setAttribute("fill", isRoot ? "#3B342C" : pal.bg);
+    r.setAttribute("stroke", isRoot ? "#3B342C" : pal.c);
+    r.setAttribute("stroke-width", isRoot ? 1 : (isHot ? 2.5 : 1.4));
+    g.appendChild(r);
+    const t = document.createElementNS(NS, "text");
+    t.setAttribute("x", node.w/2); t.setAttribute("y", NODE_H/2 + 5);
+    t.setAttribute("text-anchor", "middle");
+    t.setAttribute("font-size", isRoot ? 16 : 13.5);
+    t.setAttribute("font-weight", isRoot || node.depth === 1 ? 700 : 500);
+    t.setAttribute("fill", isRoot ? "#fff" : "#2B2620");
+    if(isRoot || node.depth === 1) t.setAttribute("class","serif");
+    t.textContent = node.label;
+    g.appendChild(t);
+    if(node.collapsed && node.children){
+      const hidden = countAll(node);
+      const b = document.createElementNS(NS, "rect");
+      b.setAttribute("x", node.w - 6); b.setAttribute("y", -7);
+      b.setAttribute("width", 26 + String(hidden).length*7); b.setAttribute("height", 16);
+      b.setAttribute("rx", 8); b.setAttribute("fill", pal.c);
+      const bt = document.createElementNS(NS, "text");
+      bt.setAttribute("class","plus");
+      bt.setAttribute("x", node.w - 6 + (26 + String(hidden).length*7)/2); bt.setAttribute("y", 4.5);
+      bt.setAttribute("text-anchor", "middle");
+      bt.textContent = "+" + hidden;
+      g.append(b, bt);
+    }
+    g.addEventListener("click", e=>{
+      e.stopPropagation();
+      if(node.children){ node.collapsed = !node.collapsed; render(); }
+      showDetail(node);
+    });
+    nodesG.appendChild(g);
+    kids.forEach(draw);
+  })(TREE);
+  applyT();
+}
+function countAll(node){
+  let n = 0;
+  (function c(x){ (x.children||[]).forEach(k=>{ n++; c(k); }); })(node);
+  return n;
+}
+function applyT(){
+  vp.setAttribute("transform", `translate(${tx},${ty}) scale(${scale})`);
+}
+function fitView(){
+  layout();
+  let minX=1e9,maxX=-1e9,minY=1e9,maxY=-1e9;
+  (function w(n){
+    minX=Math.min(minX,n.x); maxX=Math.max(maxX,n.x+n.w);
+    minY=Math.min(minY,n.y-NODE_H/2); maxY=Math.max(maxY,n.y+NODE_H/2);
+    (n.collapsed?[]:(n.children||[])).forEach(w);
+  })(TREE);
+  const W = innerWidth, H = innerHeight;
+  const s = Math.max(0.22, Math.min(1.1, Math.min((W-140)/(maxX-minX), (H-170)/(maxY-minY))));
+  scale = s;
+  tx = (W - (maxX-minX)*s)/2 - minX*s;
+  ty = (H - (maxY-minY)*s)/2 - minY*s + 20;
+  applyT();
+}
+
+/* ================= 详情面板 ================= */
+const detail = document.getElementById("detail");
+function showDetail(node){
+  const path = [];
+  let n = node;
+  while(n){ path.unshift(n.label); n = n.parent; }
+  detail.innerHTML = `<div class="crumb">${path.map(esc).join(" › ")}</div>
+    <div class="lab serif">${esc(node.label)}</div>
+    <div class="note">${node.note ? esc(node.note) : "（这一枝还没有备注，点别的看看）"}</div>`;
+  detail.classList.add("show");
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+/* ================= 平移 / 缩放 ================= */
+const stage = document.getElementById("stage");
+let dragging = false, lastX = 0, lastY = 0, moved = false;
+stage.addEventListener("pointerdown", e=>{
+  dragging = true; moved = false; lastX = e.clientX; lastY = e.clientY;
+  stage.classList.add("panning");
+});
+window.addEventListener("pointermove", e=>{
+  if(!dragging) return;
+  const dx = e.clientX - lastX, dy = e.clientY - lastY;
+  if(Math.abs(dx) + Math.abs(dy) > 2) moved = true;
+  tx += dx; ty += dy; lastX = e.clientX; lastY = e.clientY;
+  applyT();
+});
+window.addEventListener("pointerup", ()=>{
+  dragging = false; stage.classList.remove("panning");
+});
+stage.addEventListener("wheel", e=>{
+  e.preventDefault();
+  zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.12 : 0.89);
+},{passive:false});
+function zoomAt(cx, cy, f){
+  const ns = Math.max(0.18, Math.min(2.4, scale * f));
+  tx = cx - (cx - tx) * (ns / scale);
+  ty = cy - (cy - ty) * (ns / scale);
+  scale = ns; applyT();
+}
+document.getElementById("zoomIn").onclick = ()=>zoomAt(innerWidth/2, innerHeight/2, 1.25);
+document.getElementById("zoomOut").onclick = ()=>zoomAt(innerWidth/2, innerHeight/2, 0.8);
+document.getElementById("fit").onclick = fitView;
+
+/* ================= 随机走一条路 ================= */
+const banner = document.getElementById("pathBanner");
+function randLeaf(parentId){
+  const p = byId[parentId];
+  const list = [];
+  (function collect(n){ (n.children||[]).forEach(k=>{ k.children ? collect(k) : list.push(k); }); })(p);
+  return list[Math.floor(Math.random()*list.length)];
+}
+function reveal(node){
+  let n = node.parent;
+  while(n && n !== TREE){ n.collapsed = false; n = n.parent; }
+}
+document.getElementById("dice").onclick = ()=>{
+  const topic = randLeaf("source");
+  const form  = byId["form-" + (1 + Math.floor(Math.random()*6))];
+  const lens  = randLeaf("lens");
+  const aud   = randLeaf("aud");
+  [topic, form, lens, aud].forEach(reveal);
+  hotIds = new Set([topic.id, form.id, lens.id, aud.id, "source","form","formula","lens","aud"]);
+  render();
+  banner.innerHTML = `<span class="cap">🎲 随机一条路 · 不合适就再摇</span>
+    <b>${esc(topic.label)}</b> × <b>${esc(form.label)}</b> × <b>${esc(lens.label)}视角</b> · 给<b>${esc(aud.label)}</b>
+    <button class="x" title="收起">✕</button>`;
+  banner.classList.add("show");
+  banner.querySelector(".x").onclick = ()=>{
+    banner.classList.remove("show");
+    hotIds = new Set(); render();
+  };
+};
+
+/* ================= 图例 ================= */
+document.getElementById("legend").innerHTML = Object.values(PALETTES).map(p=>
+  `<span><i style="background:${p.c}"></i>${p.name}</span>`).join("");
+
+render();
+fitView();
+window.addEventListener("resize", ()=>{ /* 保持当前视图，仅防溢出 */ });
+</script>
+<script>
+/* ===== 强制刷新组件 =====
+   改版时：同步更新本文件 PAGE_VERSION 与根目录 version.json 的 version/changelog，缺一不算完成 */
+const PAGE_VERSION = 1;
+(function checkVersion(){
+  fetch("version.json?t=" + Date.now())
+    .then(r => r.json())
+    .then(remote => {
+      const vd = document.getElementById("verDate"), vn = document.getElementById("verNote");
+      if (remote.version !== undefined) {
+        vd.textContent = "最近更新 " + (remote.date || "");
+        vn.textContent = (remote.changelog || [])[0] || "";
+      }
+      const remoteV = parseInt(remote.version || 0, 10);
+      if (remoteV > PAGE_VERSION) {
+        /* 防循环：每个目标版本每会话最多自动刷新一次 */
+        const key = "xuanti_refreshed_for";
+        if (sessionStorage.getItem(key) !== String(remoteV)) {
+          sessionStorage.setItem(key, String(remoteV));
+          const p = new URLSearchParams(location.search);
+          p.set("v", remoteV + "." + Date.now());
+          location.replace(location.pathname + "?" + p.toString());
+        }
+      }
+    })
+    .catch(() => { const vn = document.getElementById("verNote"); if (vn) vn.textContent = "（更新检查失败，不影响使用）"; });
+})();
+document.getElementById("refreshBtn").addEventListener("click", function(){
+  const p = new URLSearchParams(location.search);
+  p.set("v", Date.now());
+  location.replace(location.pathname + "?" + p.toString());
+});
+</script>
+</body>
+</html>

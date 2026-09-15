@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>毕设选题工具站 ✨🍮</title>
+<style>
+:root{
+  --bg:#FAF5EC; --ink:#2B2620; --sub:#8B7F70; --card:#fff; --line:#EEE4D4;
+  --accent:#7C6CF0; --pink:#F0A8C0; --green:#5FA87A;
+  --shadow:0 10px 30px -12px rgba(80,60,30,.18);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+  background:
+    radial-gradient(1100px 480px at 85% -10%, #F3EBFF 0%, transparent 60%),
+    radial-gradient(900px 420px at -10% 25%, #FDEFF4 0%, transparent 55%),
+    var(--bg);
+  color:var(--ink); min-height:100vh;
+}
+.serif{font-family:"Noto Serif SC","Songti SC","STSong","SimSun",serif}
+.wrap{max-width:920px;margin:0 auto;padding:0 22px}
+header{padding:64px 0 10px;text-align:center}
+.badge{display:inline-flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);
+  border-radius:999px;padding:7px 16px;font-size:13px;color:var(--sub);box-shadow:var(--shadow)}
+h1{font-size:clamp(28px,4.6vw,42px);margin:20px 0 10px;letter-spacing:2px}
+.tagline{color:var(--sub);font-size:15px;line-height:1.9;margin:0 auto;max-width:560px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:44px 0 10px}
+@media (max-width:720px){.cards{grid-template-columns:1fr}}
+a.card{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);
+  border-radius:20px;padding:28px 26px;box-shadow:var(--shadow);transition:.2s}
+a.card:hover{transform:translateY(-3px);box-shadow:0 16px 34px -12px rgba(80,60,30,.28)}
+.card .emo{font-size:34px}
+.card h2{margin:14px 0 8px;font-size:20px;letter-spacing:1px}
+.card p{margin:0;color:var(--sub);font-size:13.5px;line-height:1.9}
+.card .go{display:inline-block;margin-top:16px;font-size:13px;color:var(--accent);font-weight:700}
+.how{background:linear-gradient(135deg,#EFECFE,#FDEFF4);border:1px dashed #D8C9F5;border-radius:16px;
+  padding:18px 22px;font-size:14px;line-height:2;margin:26px 0}
+.how b{color:var(--accent)}
+.changelog{margin:34px 0 10px}
+.changelog h3{font-size:16px;letter-spacing:1px}
+.changelog ul{list-style:none;padding:0;margin:12px 0 0}
+.changelog li{font-size:13px;color:var(--sub);padding:9px 14px;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;margin-bottom:8px;line-height:1.7}
+footer{text-align:center;padding:44px 0 60px;color:var(--sub);font-size:13px;line-height:2}
+/* ===== 强制刷新组件（规范见 reference/强制刷新组件.md） ===== */
+.refresh-box{position:fixed;top:14px;right:14px;z-index:60;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.refresh-box button{border:none;cursor:pointer;border-radius:12px;padding:9px 16px;font-size:13px;letter-spacing:1px;
+  background:linear-gradient(135deg,#7C6CF0,#9B6CF0);color:#fff;box-shadow:0 8px 20px -6px rgba(124,108,240,.5)}
+.refresh-box button:hover{filter:brightness(1.07)}
+.refresh-box .verline{max-width:300px;background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:10px;
+  padding:7px 12px;font-size:11.5px;color:var(--sub);line-height:1.6;text-align:right}
+.refresh-box .verline b{color:var(--ink)}
+@media (max-width:860px){.refresh-box .verline{display:none}}
+</style>
+</head>
+<body>
+
+<div class="refresh-box">
+  <button id="refreshBtn" type="button">🔄 一键刷新</button>
+  <div class="verline">🧾 <b id="verDate">检查更新中…</b>：<span id="verNote"></span><br>⚠️ 静态网页有缓存，请勤点「一键刷新」</div>
+</div>
+
+<header class="wrap">
+  <div class="badge">✨ 设计类毕设 · 选题发散工具箱 · 纯静态无依赖</div>
+  <h1 class="serif">毕设选题工具站</h1>
+  <p class="tagline">先撒网，再收网。两个工具配合用：<br>
+  <b>思维导图</b>看清整个思考空间、随机指路；<b>发散器</b>摇组合、收藏打分。</p>
+</header>
+
+<main class="wrap">
+  <div class="cards">
+    <a class="card" href="fashe.html">
+      <div class="emo">🎰</div>
+      <h2 class="serif">选题发散器</h2>
+      <p>议题 × 形式 × 视角 × 受众四轴摇号，可锁轴收敛；16 个发散催化剂；收藏灵感五维打分，自动给出「约导师 / 再发散 / 回炉」判词；词库自己长。</p>
+      <span class="go">打开摇号机 →</span>
+    </a>
+    <a class="card" href="mindmap.html">
+      <div class="emo">🗺️</div>
+      <h2 class="serif">发散思维导图</h2>
+      <p>六条主枝看全选题空间：议题来源、五种题型、组合公式、技术加分项、过滤器、发散技巧；点节点看备注；🎲 随机点亮一条路。</p>
+      <span class="go">展开导图 →</span>
+    </a>
+  </div>
+
+  <div class="how serif">
+    <b>怎么配合用：</b>先在导图里把「①议题-④技术」当地图逛一圈 → 卡住就点 🎲 随机走一条路 →
+    有点感觉的组合去发散器里锁轴细摇 → 收藏打分，均分 ≥ 4 就可以约导师聊了。
+  </div>
+
+  <div class="changelog">
+    <h3 class="serif">🧾 更新日志</h3>
+    <ul id="clList"><li>检查更新中…</li></ul>
+  </div>
+</main>
+
+<footer>
+  🐟 ✨ 🍮<br>
+  捞鱼 &amp; 星星布丁的毕设选题工坊 · 样例已匿名化处理（同学A-E）<br>
+  发散是手段，那个让你愿意做一年的题目才是目的
+</footer>
+
+<script>
+/* ===== 强制刷新组件 =====
+   改版时：同步更新本文件 PAGE_VERSION 与根目录 version.json 的 version/changelog，缺一不算完成 */
+const PAGE_VERSION = 1;
+(function checkVersion(){
+  fetch("version.json?t=" + Date.now())
+    .then(r => r.json())
+    .then(remote => {
+      const vd = document.getElementById("verDate"), vn = document.getElementById("verNote");
+      if (remote.version !== undefined) {
+        vd.textContent = "最近更新 " + (remote.date || "");
+        vn.textContent = (remote.changelog || [])[0] || "";
+      }
+      const list = document.getElementById("clList");
+      if (remote.changelog && remote.changelog.length) {
+        list.innerHTML = remote.changelog.map((c, i) =>
+          `<li>${i === 0 ? "🆕 " : "· "}${String(c).replace(/[&<>]/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]))}</li>`).join("");
+      }
+      const remoteV = parseInt(remote.version || 0, 10);
+      if (remoteV > PAGE_VERSION) {
+        /* 防循环：每个目标版本每会话最多自动刷新一次 */
+        const key = "xuanti_refreshed_for";
+        if (sessionStorage.getItem(key) !== String(remoteV)) {
+          sessionStorage.setItem(key, String(remoteV));
+          const p = new URLSearchParams(location.search);
+          p.set("v", remoteV + "." + Date.now());
+          location.replace(location.pathname + "?" + p.toString());
+        }
+      }
+    })
+    .catch(() => { const vn = document.getElementById("verNote"); if (vn) vn.textContent = "（更新检查失败，不影响使用）"; });
+})();
+document.getElementById("refreshBtn").addEventListener("click", function(){
+  const p = new URLSearchParams(location.search);
+  p.set("v", Date.now());
+  location.replace(location.pathname + "?" + p.toString());
+});
+</script>
+</body>
+</html>
