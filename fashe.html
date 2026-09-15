@@ -27,7 +27,7 @@ body{
 
 /* ---------- header ---------- */
 header{padding:52px 0 8px;text-align:center}
-.badge{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);
+.badge{display:inline-flex;align-items:center;gap:8px;line-height:1.6;text-wrap:balance;background:var(--card);border:1px solid var(--line);
   border-radius:999px;padding:7px 16px;font-size:13px;color:var(--sub);box-shadow:var(--shadow)}
 .badge b{color:var(--accent)}
 h1{font-size:clamp(30px,5vw,46px);margin:18px 0 10px;letter-spacing:2px}
@@ -595,7 +595,7 @@ document.addEventListener("keydown", e=>{
 <script>
 /* ===== 强制刷新组件 =====
    改版时：同步更新本文件 PAGE_VERSION 与根目录 version.json 的 version/changelog，缺一不算完成 */
-const PAGE_VERSION = 2;
+const PAGE_VERSION = 3;
 (function checkVersion(){
   fetch("version.json?t=" + Date.now())
     .then(r => r.json())

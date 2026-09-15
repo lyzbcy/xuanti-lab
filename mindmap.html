@@ -34,7 +34,8 @@ svg{width:100%;height:100%;display:block}
 .tb.wide:hover{filter:brightness(1.06)}
 
 /* 顶部标题 */
-.masthead{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9;text-align:center;pointer-events:none}
+.masthead{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9;text-align:center;pointer-events:none;
+  max-width:min(560px, calc(100vw - 210px))}
 .masthead h1{margin:0;font-size:clamp(17px,2.6vw,24px);letter-spacing:2px}
 .masthead p{margin:4px 0 0;font-size:12px;color:var(--sub)}
 
@@ -78,6 +79,8 @@ svg{width:100%;height:100%;display:block}
   .tip-full{display:none}
   .tip-m{display:inline}
   .legend{display:none}
+  /* 标题整体下移到右上角刷新按钮下方，彻底避免水平重叠 */
+  .masthead{top:56px; max-width:calc(100vw - 40px)}
 }
 
 /* ===== 强制刷新组件（规范见 reference/强制刷新组件.md） ===== */
@@ -483,7 +486,7 @@ window.addEventListener("resize", () => {
 <script>
 /* ===== 强制刷新组件 =====
    改版时：同步更新本文件 PAGE_VERSION 与根目录 version.json 的 version/changelog，缺一不算完成 */
-const PAGE_VERSION = 2;
+const PAGE_VERSION = 3;
 (function checkVersion(){
   fetch("version.json?t=" + Date.now())
     .then(r => r.json())
