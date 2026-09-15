@@ -106,7 +106,7 @@ footer{text-align:center;padding:44px 0 60px;color:var(--sub);font-size:13px;lin
 <script>
 /* ===== 强制刷新组件 =====
    改版时：同步更新本文件 PAGE_VERSION 与根目录 version.json 的 version/changelog，缺一不算完成 */
-const PAGE_VERSION = 1;
+const PAGE_VERSION = 2;
 (function checkVersion(){
   fetch("version.json?t=" + Date.now())
     .then(r => r.json())

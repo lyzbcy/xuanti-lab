@@ -63,6 +63,7 @@ svg{width:100%;height:100%;display:block}
 .legend span{font-size:11px;color:var(--sub);background:rgba(255,255,255,.8);border:1px solid var(--line);
   border-radius:999px;padding:3px 10px;backdrop-filter:blur(2px)}
 .legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;font-style:normal;vertical-align:1px}
+.tip-m{display:none}
 
 /* 节点 */
 .node rect{transition:fill .12s}
@@ -74,7 +75,8 @@ svg{width:100%;height:100%;display:block}
 .link{fill:none;stroke:#C9BB9F;stroke-width:1.6;opacity:.55}
 .link.hot{stroke:#7C6CF0;stroke-width:3;opacity:1}
 @media (max-width:720px){
-  .masthead p{display:none}
+  .tip-full{display:none}
+  .tip-m{display:inline}
   .legend{display:none}
 }
 
@@ -98,7 +100,7 @@ svg{width:100%;height:100%;display:block}
 
 <div class="masthead">
   <h1 class="serif">✨ 毕设选题 · 发散思维导图</h1>
-  <p>点节点展开 / 收起 · 拖拽平移 · 滚轮缩放 · 先撒网（①-④），再收网（⑤）</p>
+  <p><span class="tip-full">点节点展开 / 收起 · 拖拽平移 · 滚轮缩放 · 先撒网（①-④），再收网（⑤）</span><span class="tip-m">点节点展开 · 双指缩放 · 🎲 随机指路</span></p>
 </div>
 
 <div class="toolbar">
@@ -230,7 +232,7 @@ const byId = {};
 (function init(node, parent, depth){
   node.parent = parent; node.depth = depth;
   byId[node.id] = node;
-  node.collapsed = depth >= 2;          // 第3层起默认收起
+  node.collapsed = depth >= 1;          // 第2层起默认收起（保证首屏节点字号可读，点开看细节）
   if(node.children) node.children.forEach(c=>init(c, node, depth+1));
 })(TREE, null, 0);
 
@@ -408,6 +410,28 @@ document.getElementById("zoomIn").onclick = ()=>zoomAt(innerWidth/2, innerHeight
 document.getElementById("zoomOut").onclick = ()=>zoomAt(innerWidth/2, innerHeight/2, 0.8);
 document.getElementById("fit").onclick = fitView;
 
+/* 双指缩放（触屏）：两指捏合以中点为中心缩放；单指仍走 pointer 拖拽平移 */
+let pinchDist = 0;
+stage.addEventListener("touchstart", e => {
+  if (e.touches.length === 2) {
+    dragging = false; stage.classList.remove("panning");
+    pinchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
+                           e.touches[0].clientY - e.touches[1].clientY);
+  }
+}, { passive: true });
+stage.addEventListener("touchmove", e => {
+  if (e.touches.length === 2 && pinchDist > 0) {
+    e.preventDefault();
+    const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
+                         e.touches[0].clientY - e.touches[1].clientY);
+    zoomAt((e.touches[0].clientX + e.touches[1].clientX) / 2,
+           (e.touches[0].clientY + e.touches[1].clientY) / 2,
+           d / pinchDist);
+    pinchDist = d;
+  }
+}, { passive: false });
+stage.addEventListener("touchend", () => { pinchDist = 0; }, { passive: true });
+
 /* ================= 随机走一条路 ================= */
 const banner = document.getElementById("pathBanner");
 function randLeaf(parentId){
@@ -444,12 +468,22 @@ document.getElementById("legend").innerHTML = Object.values(PALETTES).map(p=>
 
 render();
 fitView();
-window.addEventListener("resize", ()=>{ /* 保持当前视图，仅防溢出 */ });
+let lastW = innerWidth, lastH = innerHeight, rsT = null;
+window.addEventListener("resize", () => {
+  clearTimeout(rsT);
+  rsT = setTimeout(() => {
+    /* 只有宽高变化超过 25%（拖窗口/旋转屏幕）才重新适配；忽略手机地址栏收放的小抖动 */
+    if (Math.abs(innerWidth - lastW) > lastW * 0.25 || Math.abs(innerHeight - lastH) > lastH * 0.25) {
+      lastW = innerWidth; lastH = innerHeight;
+      fitView();
+    }
+  }, 200);
+});
 </script>
 <script>
 /* ===== 强制刷新组件 =====
    改版时：同步更新本文件 PAGE_VERSION 与根目录 version.json 的 version/changelog，缺一不算完成 */
-const PAGE_VERSION = 1;
+const PAGE_VERSION = 2;
 (function checkVersion(){
   fetch("version.json?t=" + Date.now())
     .then(r => r.json())

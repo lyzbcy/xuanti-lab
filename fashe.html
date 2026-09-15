@@ -6,7 +6,7 @@
 <title>毕设选题发散器 ✨🍮</title>
 <style>
 :root{
-  --bg:#FAF5EC; --ink:#2B2620; --sub:#8B7F70; --card:#FFFFFF; --line:#EEE4D4;
+  --bg:#FAF5EC; --ink:#2B2620; --sub:#6E6254; --card:#FFFFFF; --line:#EEE4D4;
   --accent:#7C6CF0; --accent-soft:#EFECFE; --pink:#F0A8C0; --pink-soft:#FDEFF4;
   --amber:#E2A23B; --amber-soft:#FBF1DE; --green:#5FA87A; --green-soft:#EAF5EE;
   --shadow:0 10px 30px -12px rgba(80,60,30,.18);
@@ -229,6 +229,7 @@ footer .hearts{font-size:16px}
   <div class="sec-head"><span class="no">03</span><h2 class="serif">灵感收藏夹</h2></div>
   <p class="sec-sub">收藏的灵感用五个维度打分（点星星）。均分 ≥ 4 → 可以约导师聊了；3~4 → 再发散一轮；&lt; 3 → 回炉。</p>
   <div class="saved-bar" id="savedBar" style="display:none">
+    <button class="btn ghost small" id="exportFileBtn">⬇ 导出文件</button>
     <button class="btn ghost small" id="exportBtn">📋 复制全部</button>
   </div>
   <div id="savedList"></div>
@@ -526,12 +527,24 @@ function renderSaved(){
     save(); renderSaved();
   }));
 }
-function exportAll(){
-  if(!state.saved.length){ toast("收藏夹还是空的"); return; }
-  const txt = "毕设选题发散器 · 收藏的灵感\n" + state.saved.map((s,i)=>
+function buildExportText(){
+  return "毕设选题发散器 · 收藏的灵感\n" + state.saved.map((s,i)=>
     `${i+1}. ${s.title}\n   四轴：${s.parts.theme} / ${s.parts.form} / ${s.parts.lens} / ${s.parts.audience}\n   打分：${SCORE_DIMS.map((d,j)=>d+" "+s.scores[j]+"/5").join("，")}（均分 ${scoreAvg(s).toFixed(1)}）`
   ).join("\n");
-  copyText(txt);
+}
+function exportAll(){
+  if(!state.saved.length){ toast("收藏夹还是空的"); return; }
+  copyText(buildExportText());
+}
+function exportFile(){
+  if(!state.saved.length){ toast("收藏夹还是空的"); return; }
+  const blob = new Blob([buildExportText()], {type:"text/plain;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "毕设选题灵感_" + new Date().toISOString().slice(0,10) + ".txt";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 3000);
+  toast("已导出文件 📄");
 }
 function copyText(t){
   if(navigator.clipboard && navigator.clipboard.writeText){
@@ -574,6 +587,7 @@ $("#saveBtn").addEventListener("click", saveIdea);
 $("#copyBtn").addEventListener("click", ()=>{ if(currentParts) copyText($("#resultTitle").textContent); });
 $("#catBtn").addEventListener("click", shuffleCats);
 $("#exportBtn").addEventListener("click", exportAll);
+$("#exportFileBtn").addEventListener("click", exportFile);
 document.addEventListener("keydown", e=>{
   if(e.code==="Space" && e.target===document.body){ e.preventDefault(); roll(); }
 });
@@ -581,7 +595,7 @@ document.addEventListener("keydown", e=>{
 <script>
 /* ===== 强制刷新组件 =====
    改版时：同步更新本文件 PAGE_VERSION 与根目录 version.json 的 version/changelog，缺一不算完成 */
-const PAGE_VERSION = 1;
+const PAGE_VERSION = 2;
 (function checkVersion(){
   fetch("version.json?t=" + Date.now())
     .then(r => r.json())
